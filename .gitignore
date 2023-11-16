@@ -1,0 +1,13 @@
+*.exe
+*.log
+*.pyc
+*.token
+
+.hypothesis/
+.pytest_cache/
+doc_templates/
+log/
+
+config/redirect_URL_list.txt
+Dockerfile
+tests/test.py
