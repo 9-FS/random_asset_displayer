@@ -26,6 +26,10 @@ def main() -> None:
     @webapp.route("/favicon.ico")   # browser tab icon
     def favicon():
         return flask.send_from_directory("../config/", "favicon.ico")
+    
+    @webapp.route("/ping")  # just send successful response, for testing
+    def ping():
+        return "Ping has been sucessful.", 200
 
 
     webapp.run(port=port)   # start webapp on port
