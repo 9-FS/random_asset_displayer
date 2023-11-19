@@ -18,10 +18,14 @@ def main() -> None:
         return
     webapp=flask.Flask(__name__)                                                                    # create webapp
 
-    @webapp.route('/')                                          # add redirect to webapp root
+
+    @webapp.route("/")                                          # add redirect to webapp root
     def redirect():
         return flask.redirect(random.choice(redirect_URL_list)) # redirect to random URL
-
+    
+    @webapp.route("/favicon.ico")   # browser tab icon
+    def favicon():
+        return flask.send_from_directory("../config/", "favicon.ico")
 
 
     webapp.run(port=port)   # start webapp on port
