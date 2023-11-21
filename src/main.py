@@ -32,6 +32,6 @@ def main(DEBUG: bool) -> None:
         return "Ping has been sucessful.", 200
 
 
-    webapp.run(port=port)   # start webapp on port
+    webapp.run(host="0.0.0.0", port=port)   # start webapp on port
     
     return
