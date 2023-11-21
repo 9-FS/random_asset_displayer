@@ -6,7 +6,7 @@ import random
 
 
 @KFSlog.timeit
-def main() -> None:
+def main(DEBUG: bool) -> None:
     port: int=6969
     redirect_URL_list: list[str]
     webapp: flask.Flask
