@@ -5,10 +5,9 @@
 
 .hypothesis/
 .pytest_cache/
+config/
 doc_templates/
 log/
 
-config/favicon.ico
-config/redirect_URL_list.txt
 Dockerfile
 tests/test.py
