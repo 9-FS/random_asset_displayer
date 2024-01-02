@@ -8,25 +8,31 @@ import random
 @KFSlog.timeit
 def main(DEBUG: bool) -> None:
     port: int=6969
-    redirect_URL_list: list[str]
+    redirect_list: list[str]    # list of URL to redirect to or status code to return with empty response
     webapp: flask.Flask
 
 
     try:
-        redirect_URL_list=KFSconfig.load_config("./config/redirect_URL_list.txt", "").split("\n")   # load redirect_URL_list
+        redirect_list=KFSconfig.load_config("./config/redirect_list.txt", "").split("\n")   # load redirect_URL_list
     except FileNotFoundError as e:
         return
-    webapp=flask.Flask(__name__)                                                                    # create webapp
+    webapp=flask.Flask(__name__)                                                            # create webapp
 
 
-    @webapp.route("/")                                          # add redirect to webapp root
+    @webapp.route("/")                                  # add redirect to webapp root
     def redirect():
-        return flask.redirect(random.choice(redirect_URL_list)) # redirect to random URL
+        redirect_target: str
+
+        redirect_target=random.choice(redirect_list)    # URL to redirect to or status code to return with empty response
+        if redirect_target.isdigit():                   # if status code:
+            flask.abort(int(redirect_target))           # return status code
+        else:                                           # if URL:
+            return flask.redirect(redirect_target)      # redirect to random URL
     
     @webapp.route("/favicon.ico")   # browser tab icon
     def favicon():
         return flask.send_from_directory("../config/", "favicon.ico")
-    
+
     @webapp.route("/ping")  # just send successful response, for testing
     def ping():
         return "Ping has been sucessful.", 200

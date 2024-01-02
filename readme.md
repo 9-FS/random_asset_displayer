@@ -13,6 +13,6 @@ Author: "구FS"
 
 ## 1. General
 
-This simple webapp redirects the user to a random URL from a list of URL defined in `./config/redirect_URL_list.txt`. The list of URL ist only loaded once during startup and not reloaded during runtime.
+This simple webapp redirects the user to a random URL or returns an empty response with the status code from a list defined in `./config/redirect_list.txt`. The list of URL and status codes ist only loaded once during startup and not reloaded during runtime.
 
 </body>

@@ -2,21 +2,22 @@
 
 [[package]]
 name = "attrs"
-version = "23.1.0"
+version = "23.2.0"
 description = "Classes Without Boilerplate"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "attrs-23.1.0-py3-none-any.whl", hash = "sha256:1f28b4522cdc2fb4256ac1a020c78acf9cba2c6b461ccd2c126f3aa8e8335d04"},
-    {file = "attrs-23.1.0.tar.gz", hash = "sha256:6279836d581513a26f1bf235f9acd333bc9115683f14f7e8fae46c98fc50e015"},
+    {file = "attrs-23.2.0-py3-none-any.whl", hash = "sha256:99b87a485a5820b23b879f04c2305b44b951b502fd64be915879d77a7e8fc6f1"},
+    {file = "attrs-23.2.0.tar.gz", hash = "sha256:935dc3b529c262f6cf76e50877d35a4bd3c1de194fd41f47a2b7ae8f19971f30"},
 ]
 
 [package.extras]
 cov = ["attrs[tests]", "coverage[toml] (>=5.3)"]
-dev = ["attrs[docs,tests]", "pre-commit"]
+dev = ["attrs[tests]", "pre-commit"]
 docs = ["furo", "myst-parser", "sphinx", "sphinx-notfound-page", "sphinxcontrib-towncrier", "towncrier", "zope-interface"]
 tests = ["attrs[tests-no-zope]", "zope-interface"]
-tests-no-zope = ["cloudpickle", "hypothesis", "mypy (>=1.1.1)", "pympler", "pytest (>=4.3.0)", "pytest-mypy-plugins", "pytest-xdist[psutil]"]
+tests-mypy = ["mypy (>=1.6)", "pytest-mypy-plugins"]
+tests-no-zope = ["attrs[tests-mypy]", "cloudpickle", "hypothesis", "pympler", "pytest (>=4.3.0)", "pytest-xdist[psutil]"]
 
 [[package]]
 name = "blinker"
@@ -78,17 +79,17 @@ dotenv = ["python-dotenv"]
 
 [[package]]
 name = "hypothesis"
-version = "6.90.0"
+version = "6.92.2"
 description = "A library for property-based testing"
 optional = false
 python-versions = ">=3.8"
 files = [
-    {file = "hypothesis-6.90.0-py3-none-any.whl", hash = "sha256:4d7d3d3d5e4e4a9954b448fc8220cd73573e3e32adb00059f6907de6b55dcd5e"},
-    {file = "hypothesis-6.90.0.tar.gz", hash = "sha256:0ab33900b9362318bd03d911a77a0dda8629c1877420074d87ae466919f6e4c0"},
+    {file = "hypothesis-6.92.2-py3-none-any.whl", hash = "sha256:d335044492acb03fa1fdb4edacb81cca2e578049fc7306345bc0e8947fef15a9"},
+    {file = "hypothesis-6.92.2.tar.gz", hash = "sha256:841f89a486c43bdab55698de8929bd2635639ec20bf6ce98ccd75622d7ee6d41"},
 ]
 
 [package.dependencies]
-attrs = ">=19.2.0"
+attrs = ">=22.2.0"
 sortedcontainers = ">=2.1.0,<3.0.0"
 
 [package.extras]
@@ -148,13 +149,13 @@ i18n = ["Babel (>=2.7)"]
 
 [[package]]
 name = "kfsconfig"
-version = "1.0.2"
+version = "1.1.0"
 description = ""
 optional = false
 python-versions = ">=3.11.0,<4.0.0"
 files = [
-    {file = "kfsconfig-1.0.2-py3-none-any.whl", hash = "sha256:37d9c556b4016575cffb9e45bb08f018bdc4bc1bee962808c17313eeec82f140"},
-    {file = "kfsconfig-1.0.2.tar.gz", hash = "sha256:6c7e92f12bc1dddc4eb629ca0c2bef6c72832dfb1c4425baa5b4f336369ff6c2"},
+    {file = "kfsconfig-1.1.0-py3-none-any.whl", hash = "sha256:e6f80028db4346cbf2e8303d8f8f6276f83f437c4702fd4f723292272023027b"},
+    {file = "kfsconfig-1.1.0.tar.gz", hash = "sha256:f4db6a35813b81e84bcf56f1de42d6db111542aa0ee79caa6e54ccff9e825234"},
 ]
 
 [package.dependencies]
@@ -299,13 +300,13 @@ testing = ["pytest", "pytest-benchmark"]
 
 [[package]]
 name = "pytest"
-version = "7.4.3"
+version = "7.4.4"
 description = "pytest: simple powerful testing with Python"
 optional = false
 python-versions = ">=3.7"
 files = [
-    {file = "pytest-7.4.3-py3-none-any.whl", hash = "sha256:0d009c083ea859a71b76adf7c1d502e4bc170b80a8ef002da5806527b9591fac"},
-    {file = "pytest-7.4.3.tar.gz", hash = "sha256:d989d136982de4e3b29dabcc838ad581c64e8ed52c11fbe86ddebd9da0818cd5"},
+    {file = "pytest-7.4.4-py3-none-any.whl", hash = "sha256:b090cdf5ed60bf4c45261be03239c2c1c22df034fbffe691abe93cd80cea01d8"},
+    {file = "pytest-7.4.4.tar.gz", hash = "sha256:2cf0005922c6ace4a3e2ec8b4080eb0d9753fdc93107415332f50ce9e7994280"},
 ]
 
 [package.dependencies]
