@@ -1,11 +1,12 @@
 [tool.poetry]
-authors     = ["9FS <pray4spam@googlemail.com>"]
-description = ""
-license     = "MIT"
-name        = "x"                                                    # can't leave empty because of bug with `poetry install` from poetry.lock file
-readme      = "readme.md"
-repository  = "https://github.com/9-FS/2023-11-16-Random-Redirector"
-version     = "1.2.0"
+authors      = ["9FS <pray4spam@googlemail.com>"]
+description  = ""
+license      = "MIT"
+name         = ""
+package-mode = false                                                  # this is an application, not library
+readme       = "readme.md"
+repository   = "https://github.com/9-FS/2023-11-16-Random-Redirector"
+version      = "1.2.0"
 
 [tool.poetry.dependencies]
 flask     = "^3.0.0"
