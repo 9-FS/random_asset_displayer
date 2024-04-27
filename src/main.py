@@ -7,7 +7,7 @@ import random
 
 @KFSlog.timeit
 def main(DEBUG: bool) -> None:
-    port: int=6969
+    port: int=443
     redirect_list: list[str]    # list of URL to redirect to or status code to return with empty response
     webapp: flask.Flask
 
