@@ -19,7 +19,7 @@ CMD poetry run python${PYTHON_VERSION} "./src/main_outer.py"
 # MANUAL BUILD:
 
 # build docker image, @L to lowercase
-# IMAGE_NAME="9-FS/2023-11-16-Random-Redirector:latest" && docker build -t "${IMAGE_NAME@L}" --no-cache . && docker save "${IMAGE_NAME@L}" > "docker-image.tar"
+# IMAGE_NAME="9-FS/2023-11-16-Random-Redirector:latest" && docker build -t "${IMAGE_NAME@L}" --no-cache . && docker save "${IMAGE_NAME@L}" > "docker-image.tar" && docker rmi "${IMAGE_NAME@L}"
 
 # on deployment environment load docker image from tar file
 # docker load < "/mnt/user/appdata/docker-image.tar"
