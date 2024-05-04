@@ -1,8 +1,9 @@
 version: "3"
+
 services:
   2023-11-16-random-redirector:
     container_name: 2023-11-16-Random-Redirector
-    image: 9-fs/2023-11-16-random-redirector
+    image: 9-fs/2023-11-16-random-redirector:latest
     environment:
       - HOST_OS=Unraid
       - TZ=UTC
@@ -17,4 +18,5 @@ services:
         limits:
           memory: 1G
     user: 99:100
+
 networks: {}
