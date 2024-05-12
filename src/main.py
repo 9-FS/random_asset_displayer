@@ -3,20 +3,31 @@ import flask
 from KFSconfig import KFSconfig
 from KFSlog import KFSlog
 import random
+import typing
 
 
-@KFSlog.timeit
+@KFSlog.timeit()
 def main(DEBUG: bool) -> None:
-    port: int=443
+    env: dict[str, typing.Any]  # environment variables
+    ENV_DEFAULT: dict[str, typing.Any]=\
+    {
+        "HOST": "::",
+        "PORT": 80,
+    }
     redirect_list: list[str]    # list of URL to redirect to or status code to return with empty response
+    REDIRECT_LIST_DEFAULT: dict[str, str]=\
+    {
+        "content": ""
+    }
     webapp: flask.Flask
-
+    
 
     try:
-        redirect_list=KFSconfig.load_config("./config/redirect_list.txt", "").split("\n")   # load redirect_URL_list
-    except FileNotFoundError as e:
+        env          =KFSconfig.load_config(           config_filepaths=["./.env"],                     config_default=ENV_DEFAULT)                                     # load environment variables
+        redirect_list=KFSconfig.load_config(env=False, config_filepaths=["./config/redirect_list.txt"], config_default=REDIRECT_LIST_DEFAULT)["content"].split("\n")    # load redirect_URL_list
+    except ValueError:
         return
-    webapp=flask.Flask(__name__)                                                            # create webapp
+    webapp=flask.Flask(__name__)                                                                                                                                        # create webapp
 
 
     @webapp.route("/")                                  # add redirect to webapp root
@@ -38,6 +49,6 @@ def main(DEBUG: bool) -> None:
         return "Ping has been sucessful.", 200
 
 
-    webapp.run(host="::", port=port)    # start webapp on port
+    webapp.run(host=env["HOST"], port=env["PORT"])  # start webapp on port
     
     return
