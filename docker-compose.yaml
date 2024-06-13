@@ -1,22 +1,24 @@
 version: "3"
 
 services:
-  2023-11-16-random-redirector:
-    container_name: 2023-11-16-Random-Redirector
-    image: 9-fs/2023-11-16-random-redirector:latest
-    environment:
-      - HOST_OS=Unraid
-      - TZ=UTC
-    volumes:
-      - /mnt/user/appdata/2023-11-16-random-redirector/config/:/app/config/:rw
-      - /mnt/user/appdata/2023-11-16-random-redirector/log/:/app/log/:rw
-    network_mode: bridge
-    ports:
-      - 6969:443
-    deploy:
-      resources:
-        limits:
-          memory: 1G
-    user: 99:100
+    2023-11-16-random-redirector:
+        container_name: "2023-11-16-Random-Redirector"
+        image: "9-fs/2023-11-16-random-redirector:latest"
+        environment:
+            HOST_OS: "Unraid"
+            TZ: "UTC"
+            HOST: "::"
+            PORT: 80
+        volumes:
+            - "/mnt/user/appdata/2023-11-16-random-redirector/config/:/app/config/:rw"
+            - "/mnt/user/appdata/2023-11-16-random-redirector/log/:/app/log/:rw"
+        network_mode: "bridge"
+        ports:
+            - "6969:80"
+        deploy:
+            resources:
+                limits:
+                    memory: "1G"
+        user: "99:100"
 
 networks: {}
