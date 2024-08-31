@@ -1,12 +1,12 @@
 # Copyright (c) 2024 구FS, all rights reserved. Subject to the MIT licence in `licence.md`.
 import flask
-from KFSconfig import KFSconfig
-from KFSlog import KFSlog
+from kfsconfig import kfsconfig
+from kfslog import kfslog
 import random
 import typing
 
 
-@KFSlog.timeit()
+@kfslog.timeit()
 def main(DEBUG: bool) -> None:
     env: dict[str, typing.Any]  # environment variables
     ENV_DEFAULT: dict[str, typing.Any]=\
@@ -20,11 +20,11 @@ def main(DEBUG: bool) -> None:
         "content": ""
     }
     webapp: flask.Flask
-    
+
 
     try:
-        env          =KFSconfig.load_config(           config_filepaths=["./.env"],                     config_default=ENV_DEFAULT)                                     # load environment variables
-        redirect_list=KFSconfig.load_config(env=False, config_filepaths=["./config/redirect_list.txt"], config_default=REDIRECT_LIST_DEFAULT)["content"].split("\n")    # load redirect_URL_list
+        env          =kfsconfig.load_config(           config_filepaths=["./.env"],                     config_default=ENV_DEFAULT)                                     # load environment variables
+        redirect_list=kfsconfig.load_config(env=False, config_filepaths=["./config/redirect_list.txt"], config_default=REDIRECT_LIST_DEFAULT)["content"].split("\n")    # load redirect_URL_list
     except ValueError:
         return
     webapp=flask.Flask(__name__)                                                                                                                                        # create webapp
@@ -39,7 +39,7 @@ def main(DEBUG: bool) -> None:
             flask.abort(int(redirect_target))           # return status code
         else:                                           # if URL:
             return flask.redirect(redirect_target)      # redirect to random URL
-    
+
     @webapp.route("/favicon.ico")   # browser tab icon
     def favicon():
         return flask.send_from_directory("../config/", "favicon.ico")
@@ -50,5 +50,5 @@ def main(DEBUG: bool) -> None:
 
 
     webapp.run(host=env["HOST"], port=env["PORT"])  # start webapp on port
-    
+
     return
