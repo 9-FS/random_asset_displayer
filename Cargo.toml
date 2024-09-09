@@ -9,7 +9,7 @@ license     = "MIT"
 name        = "random_redirector"
 readme      = "readme.md"
 repository  = "https://github.com/9-FS/random_redirector"
-version     = "2.0.1"
+version     = "2.1.0"
 
 [dependencies]
 actix-files = "^0.6.0"
@@ -22,4 +22,5 @@ rand = "^0.8.0"
 scaler = "^1.0.0"
 serde = { version = "^1.0.0", features = ["derive"] }
 setup_logging = { git = "https://github.com/9-FS/setup_logging", tag = "2.1.0" }
+thiserror = "^1.0.0"
 tokio = { version = "^1.0.0", features = ["rt-multi-thread"] }

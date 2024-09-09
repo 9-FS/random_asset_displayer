@@ -1,54 +1,38 @@
 // Copyright (c) 2024 구FS, all rights reserved. Subject to the MIT licence in `licence.md`.
+use crate::config::*;
+use crate::error::*;
 use rand::seq::IteratorRandom;
 
 
-pub async fn main_inner(config: crate::Config) -> ()
+pub async fn main_inner(config: Config) -> Result<()>
 {
     const REDIRECT_LIST_FILEPATH: &str = "./config/redirect_list.txt";
     let redirect_list: actix_web::web::Data<Vec<String>>; // list of url to redirect to or http status code to simply return
     let web_server; // web server
 
 
-    log::info!("Loading redirect list from \"{REDIRECT_LIST_FILEPATH}\"...");
-    match std::fs::read_to_string(REDIRECT_LIST_FILEPATH)
-    {
-        Ok(o) => redirect_list = actix_web::web::Data::new(o.lines().filter(|line| !line.is_empty()).map(|line| line.to_owned()).collect()), // load redirect list, remove empty lines, &str -> String
-        Err(e) =>
-        {
-            log::error!("Loading redirect list failed with: {e}");
-            return;
-        }
-    };
-    log::info!("\rLoaded redirect list from \"{REDIRECT_LIST_FILEPATH}\".");
+    redirect_list = actix_web::web::Data::new(std::fs::read_to_string(REDIRECT_LIST_FILEPATH)?.lines().filter(|line| !line.is_empty()).map(|line| line.to_owned()).collect()); // load redirect list, remove empty lines, &str -> String
+    log::info!("Loaded redirect list from \"{REDIRECT_LIST_FILEPATH}\".");
     log::debug!("{redirect_list:?}");
-    if redirect_list.to_vec().is_empty()
-    {
-        log::error!("Redirect list is empty.");
-        return;
-    }
+    if redirect_list.to_vec().is_empty() {return Err(Error::RedirectListEmpty());} // check if redirect list is empty
 
 
-    log::info!("Binding web server to \"{}:{}\"...", config.HOST, config.PORT);
     match actix_web::HttpServer::new(move || {
         actix_web::App::new()
             .app_data(redirect_list.clone())
             .route("/", actix_web::web::get().to(redirect)) // "/" -> redirect
             .route("/favicon.ico", actix_web::web::get().to(favicon)) // "/favicon.ico" -> icon
     })
-    .bind((config.HOST.clone(), config.PORT))
+        .bind((config.HOST.clone(), config.PORT))
     {
         Ok(o) => web_server = o,
-        Err(e) =>
-        {
-            log::error!("Binding web server to \"{}:{}\" failed with: {e}", config.HOST, config.PORT);
-            return;
-        }
+        Err(e) => return Err(Error::WebServerAddressBinding {host: config.HOST, port: config.PORT, reason: e}),
     }
-    log::info!("\rBound web server to \"{}:{}\".", config.HOST, config.PORT);
+    log::info!("Bound web server to \"{}:{}\".", config.HOST, config.PORT);
 
     web_server.run().await.expect("Running web server failed even though web server had already been bound successfully.");
 
-    return;
+    return Ok(());
 }
 
 
