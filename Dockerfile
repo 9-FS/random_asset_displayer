@@ -1,16 +1,15 @@
 ARG RUST_VERSION="1.80"
-FROM rust:$RUST_VERSION
 
-ENV RUST_VERSION="1.80"
-
-
+FROM rust:$RUST_VERSION as builder
 WORKDIR "/app/"
-COPY . .
-
+COPY "." "."
 RUN cargo build --release
 
+FROM gcr.io/distroless/cc
+WORKDIR "/app/"
+COPY --from=builder "/app/target/release/random_redirector" "."
 
-CMD "./target/release/random_redirector"
+CMD ["./random_redirector"]
 
 
 # MANUAL BUILD:
