@@ -9,7 +9,7 @@ license     = "MIT"
 name        = "random_redirector"
 readme      = "readme.md"
 repository  = "https://github.com/9-FS/random_redirector"
-version     = "2.1.0"
+version     = "2.1.1"
 
 [dependencies]
 actix-files = "^0.6.0"

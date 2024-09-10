@@ -3,7 +3,7 @@ version: "3"
 services:
     random_redirector:
         container_name: "random_redirector"
-        image: "9-fs/random_redirector:latest"
+        image: "ghcr.io/9-fs/random_redirector:2.1.1"
         environment:
             HOST_OS: "Unraid"
             PGID: 100
