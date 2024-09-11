@@ -666,12 +666,12 @@ checksum = "d8adc4bb1803a324070e64a98ae98f38934d91957a99cfb3a43dcbc01bc56439"
 
 [[package]]
 name = "load_config"
-version = "1.0.0"
-source = "git+https://github.com/9-FS/load_config?tag=1.0.0#aeafea6bbe56d755ff68130ea6a403d6eebb11db"
+version = "1.1.0"
+source = "git+https://github.com/9-FS/load_config?tag=1.1.0#1705c7fc0f0cfc6bd42cde1a3a6867fac65ee332"
 dependencies = [
  "figment",
- "log",
  "serde",
+ "thiserror",
  "toml",
 ]
 
@@ -930,7 +930,7 @@ dependencies = [
 
 [[package]]
 name = "random_redirector"
-version = "2.1.1"
+version = "2.2.0"
 dependencies = [
  "actix-files",
  "actix-web",

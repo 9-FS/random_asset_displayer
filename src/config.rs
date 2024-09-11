@@ -7,6 +7,7 @@
 #[allow(non_snake_case)]
 pub struct Config
 {
+    pub DEBUG: Option<bool>, // debug mode?
     pub HOST: String, // web server host
     pub PORT: u16, // web server port
 }
@@ -17,6 +18,7 @@ impl Default for Config
     {
         Config
         {
+            DEBUG: None, // no entry in default config, defaults to false
             HOST: "::".to_owned(),
             PORT: 6900
         }

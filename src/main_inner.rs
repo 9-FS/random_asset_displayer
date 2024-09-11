@@ -4,7 +4,7 @@ use crate::error::*;
 use rand::seq::IteratorRandom;
 
 
-pub async fn main_inner(config: Config) -> Result<()>
+pub async fn main_inner(config: Config) -> Result<(), Error>
 {
     const REDIRECT_LIST_FILEPATH: &str = "./config/redirect_list.txt";
     let redirect_list: actix_web::web::Data<Vec<String>>; // list of url to redirect to or http status code to simply return
