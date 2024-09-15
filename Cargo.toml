@@ -24,3 +24,7 @@ serde = { version = "^1.0.0", features = ["derive"] }
 setup_logging = { git = "https://github.com/9-FS/setup_logging", tag = "2.1.1" }
 thiserror = "^1.0.0"
 tokio = { version = "^1.0.0", features = ["rt-multi-thread"] }
+
+[lints.clippy]
+needless_late_init = "allow"
+needless_return    = "allow"
