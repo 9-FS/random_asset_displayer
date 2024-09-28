@@ -1,5 +1,3 @@
-version: "3"
-
 services:
     random_redirector:
         container_name: "random_redirector"
