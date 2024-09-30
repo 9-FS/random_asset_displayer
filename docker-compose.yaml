@@ -9,6 +9,7 @@ services:
             TZ: "UTC"
             UMASK: 000
         volumes:
+            - "/mnt/user/appdata/random_redirector/assets/:/app/assets/:rw"
             - "/mnt/user/appdata/random_redirector/config/:/app/config/:rw"
             - "/mnt/user/appdata/random_redirector/log/:/app/log/:rw"
         network_mode: "bridge"
