@@ -4,14 +4,12 @@ services:
         image: "ghcr.io/9-fs/random_redirector:2.2.4"
         environment:
             HOST_OS: "Unraid"
-            PGID: 100
-            PUID: 99
             TZ: "UTC"
-            UMASK: 000
         volumes:
             - "/mnt/user/appdata/random_redirector/assets/:/app/assets/:rw"
             - "/mnt/user/appdata/random_redirector/config/:/app/config/:rw"
             - "/mnt/user/appdata/random_redirector/log/:/app/log/:rw"
+        user: "99:100"
         network_mode: "bridge"
         ports:
             - "6900:6900"
@@ -19,6 +17,3 @@ services:
             resources:
                 limits:
                     memory: "1G"
-        user: "99:100"
-
-networks: {}
