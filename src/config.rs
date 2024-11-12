@@ -20,7 +20,7 @@ impl Default for Config
         {
             DEBUG: None, // no entry in default config, defaults to false
             HOST: "::".to_owned(),
-            PORT: 6900
+            PORT: 80
         }
     }
 }

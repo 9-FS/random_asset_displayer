@@ -2,6 +2,7 @@
 *.log
 *.token
 
+/assets/
 /config/
 /db/
 /doc_templates/

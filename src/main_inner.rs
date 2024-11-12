@@ -6,13 +6,13 @@ use rand::seq::IteratorRandom;
 
 pub async fn main_inner(config: Config) -> Result<(), Error>
 {
-    const REDIRECT_LIST_FILEPATH: &str = "./config/redirect_list.txt";
+    const ASSETS_FILEPATH: &str = "./config/assets.txt";
     let redirect_list: actix_web::web::Data<Vec<String>>; // list of url to redirect to or http status code to simply return
     let web_server; // web server
 
 
-    redirect_list = actix_web::web::Data::new(std::fs::read_to_string(REDIRECT_LIST_FILEPATH)?.lines().filter(|line| !line.is_empty()).map(|line| line.to_owned()).collect()); // load redirect list, remove empty lines, &str -> String
-    log::info!("Loaded redirect list from \"{REDIRECT_LIST_FILEPATH}\".");
+    redirect_list = actix_web::web::Data::new(std::fs::read_to_string(ASSETS_FILEPATH)?.lines().filter(|line| !line.is_empty()).map(|line| line.to_owned()).collect()); // load redirect list, remove empty lines, &str -> String
+    log::info!("Loaded redirect list from \"{ASSETS_FILEPATH}\".");
     log::debug!("{redirect_list:?}");
     if redirect_list.to_vec().is_empty() {return Err(Error::RedirectListEmpty());} // check if redirect list is empty
 
@@ -37,14 +37,17 @@ pub async fn main_inner(config: Config) -> Result<(), Error>
 
 
 /// # Summary
-/// Picks a random line from the redirect list and returns an empty HTTP response with the status code from the line or a redirect to the URL from the line.
+/// Picks a random line from the redirect list and
+/// - if it's a number: returns that as status code
+/// - if it's an URL: redirects to it
+/// - if it's a filepath: assumes it's an image returns the file
+/// - if it's none of the above: returns status code 500
 ///
 /// # Returns
 /// HTTP response
 async fn redirect(redirect_list: actix_web::web::Data<Vec<String>>) -> impl actix_web::Responder
 {
     let line_random: String; // random line from redirect list
-    let response: actix_web::HttpResponse; // http resonse to answer
 
 
     line_random = redirect_list
@@ -55,26 +58,37 @@ async fn redirect(redirect_list: actix_web::web::Data<Vec<String>>) -> impl acti
         .to_owned();
 
 
-    match line_random.parse::<u16>() // try line -> u16
+    if let Ok(o) = line_random.parse::<u16>() // try line -> u16, display status code
     {
-        Ok(o) => // display status code
+        let status: actix_web::http::StatusCode = actix_web::http::StatusCode::from_u16(o) // try u16 -> http status code
+        .unwrap_or_else(|_|
         {
-            let status: actix_web::http::StatusCode = actix_web::http::StatusCode::from_u16(o) // try u16 -> http status code
-            .unwrap_or_else(|_|
-            {
-                log::error!("Assigning a HTTP status code to {o} failed. Falling back to status 500 \"Internval Server Error\".");
-                return actix_web::http::StatusCode::INTERNAL_SERVER_ERROR; // default to 500
-            });
+            log::error!("Assigning a HTTP status code to {o} failed. Falling back to status 500 \"Internval Server Error\".");
+            return actix_web::http::StatusCode::INTERNAL_SERVER_ERROR; // default to 500
+        });
+        return actix_web::HttpResponse::NoContent()
+            .status(status)
+            .content_type(actix_web::http::header::ContentType::html())
+            .body(format!("<center><h1>{status}</h1></center>"));
+    }
 
-            response = actix_web::HttpResponse::NoContent()
-                .status(status)
-                .content_type(actix_web::http::header::ContentType::html())
-                .body(format!("<center><h1>{status}</h1></center>" ));
-        },
-        Err(_) => { response = actix_web::HttpResponse::Found().append_header(("Location", line_random)).finish(); } // redirect to URL
-    };
+    if line_random.starts_with("http://") || line_random.starts_with("https://") // if line is url: redirect
+    {
+        return actix_web::HttpResponse::Found().append_header(("Location", line_random)).finish(); // redirect to url
+    }
 
-    return response;
+    if let Ok(o) = std::fs::read(&line_random) // if line is filepath: assume image, display file
+    {
+        return actix_web::HttpResponse::Ok()
+            .content_type("image/png")
+            .body(o); // return image
+    }
+    log::error!("Loading file from {line_random} failed. Falling back to status 500 \"Internal Server Error\".");
+
+    return actix_web::HttpResponse::NoContent() // if everything failed: default to status code 500
+        .status(actix_web::http::StatusCode::INTERNAL_SERVER_ERROR)
+        .content_type(actix_web::http::header::ContentType::html())
+        .body(format!("<center><h1>{}</h1></center>", actix_web::http::StatusCode::INTERNAL_SERVER_ERROR));
 }
 
 

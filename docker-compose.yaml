@@ -1,7 +1,7 @@
 services:
     random_redirector:
         container_name: "random_redirector"
-        image: "ghcr.io/9-fs/random_redirector:2.2.4"
+        image: "ghcr.io/9-fs/random_redirector:2.3.0"
         environment:
             HOST_OS: "Unraid"
             TZ: "UTC"
