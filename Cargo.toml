@@ -3,17 +3,19 @@ authors     = ["9-FS <pray4spam@googlemail.com>"]
 categories  = []
 description = ""
 edition     = "2021"
-exclude     = [".github/", "readme.pdf"]                  # additional to .gitignore
+exclude     = [".github/", "readme.pdf"]                       # additional to .gitignore
 keywords    = []
 license     = "MIT"
-name        = "random_redirector"
+name        = "random_asset_displayer"
 readme      = "readme.md"
-repository  = "https://github.com/9-FS/random_redirector"
-version     = "2.3.0"
+repository  = "https://github.com/9-FS/random_asset_displayer"
+version     = "3.0.0"
 
 [dependencies]
 actix-files = "^0.6.0"
-actix-web = { version = "^4.0.0", default-features = false }
+actix-web = { version = "^4.0.0", default-features = false, features = [
+    "macros",
+] }
 load_config = { git = "https://github.com/9-FS/load_config", tag = "1.2.1", features = [
     "toml_file",
 ] }
@@ -24,6 +26,7 @@ serde = { version = "^1.0.0", features = ["derive"] }
 setup_logging = { git = "https://github.com/9-FS/setup_logging", tag = "2.1.1" }
 thiserror = "^2.0.0"
 tokio = { version = "^1.0.0", features = ["rt-multi-thread"] }
+walkdir = "2.5.0"
 
 [lints.clippy]
 needless_late_init = "allow"

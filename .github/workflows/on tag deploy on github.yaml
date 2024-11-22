@@ -1,6 +1,6 @@
 name: "On Tag Deploy on GitHub"
 env:
-    REPO_NAME: "random_redirector"
+    REPO_NAME: "random_asset_displayer"
     RUN_TESTS: true
     RUST_VERSION: "1.82"
 on:

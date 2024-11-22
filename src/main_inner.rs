@@ -1,27 +1,55 @@
 // Copyright (c) 2024 구FS, all rights reserved. Subject to the MIT licence in `licence.md`.
 use crate::config::*;
+use crate::display_asset_random::*;
+use crate::display_favicon::*;
 use crate::error::*;
-use rand::seq::IteratorRandom;
 
 
 pub async fn main_inner(config: Config) -> Result<(), Error>
 {
-    const ASSETS_FILEPATH: &str = "./config/assets.txt";
-    let redirect_list: actix_web::web::Data<Vec<String>>; // list of url to redirect to or http status code to simply return
+    const ASSETS_PATH: &str = "./assets/"; // path to assets
+    let assets_filepath: Vec<String>; // list of assets filepath to load and display, contains all file
     let web_server; // web server
 
 
-    redirect_list = actix_web::web::Data::new(std::fs::read_to_string(ASSETS_FILEPATH)?.lines().filter(|line| !line.is_empty()).map(|line| line.to_owned()).collect()); // load redirect list, remove empty lines, &str -> String
-    log::info!("Loaded redirect list from \"{ASSETS_FILEPATH}\".");
-    log::debug!("{redirect_list:?}");
-    if redirect_list.to_vec().is_empty() {return Err(Error::RedirectListEmpty());} // check if redirect list is empty
+    assets_filepath = walkdir::WalkDir::new(ASSETS_PATH).follow_links(true).into_iter() // walk through assets directory
+        .filter_map(|entry|
+        {
+            match entry
+            {
+                Ok(o) => // reading entry succeeded
+                {
+                    if o.file_type().is_dir() {return None;} // filter out directories
+
+                    match o.path().to_str() // DirEntry -> String
+                    {
+                        Some(o) => Some(o.to_owned()), // converting succeeded, return filepath wrapped in Some to keep
+                        None => // converting failed
+                        {
+                            log::warn!("Converting path \"{o:?}\" to &str failed.");
+                            None
+                        }
+                    }
+                }
+                Err(e) => // reading entry failed
+                {
+                    log::warn!("{e}"); // log warning
+                    None // return None to filter out
+                }
+            }
+        })
+        .filter(|entry| !entry.ends_with("/favicon.ico")) // filter out favicon.ico
+        .collect();
+    log::info!("Loaded asset list from \"{ASSETS_PATH}\".");
+    log::debug!("{assets_filepath:?}");
+    if assets_filepath.is_empty() {return Err(Error::AssetListEmpty());} // check if redirect list is empty
 
 
     match actix_web::HttpServer::new(move || {
         actix_web::App::new()
-            .app_data(redirect_list.clone())
-            .route("/", actix_web::web::get().to(redirect)) // "/" -> redirect
-            .route("/favicon.ico", actix_web::web::get().to(favicon)) // "/favicon.ico" -> icon
+            .app_data(actix_web::web::Data::new(assets_filepath.clone()))
+            .service(display_asset_random) // "/" -> redirect
+            .service(display_favicon) // "/favicon.ico" -> icon
     })
         .bind((config.HOST.clone(), config.PORT))
     {
@@ -33,74 +61,4 @@ pub async fn main_inner(config: Config) -> Result<(), Error>
     web_server.run().await.expect("Running web server failed even though web server had already been bound successfully.");
 
     return Ok(());
-}
-
-
-/// # Summary
-/// Picks a random line from the redirect list and
-/// - if it's a number: returns that as status code
-/// - if it's an URL: redirects to it
-/// - if it's a filepath: assumes it's an image returns the file
-/// - if it's none of the above: returns status code 500
-///
-/// # Returns
-/// HTTP response
-async fn redirect(redirect_list: actix_web::web::Data<Vec<String>>) -> impl actix_web::Responder
-{
-    let line_random: String; // random line from redirect list
-
-
-    line_random = redirect_list
-        .to_vec()
-        .iter()
-        .choose(&mut rand::thread_rng()) // pick random line from redirect list or if empty default to status code 500
-        .expect("Redirect list is empty even though it was checked before to not be empty.")
-        .to_owned();
-
-
-    if let Ok(o) = line_random.parse::<u16>() // try line -> u16, display status code
-    {
-        let status: actix_web::http::StatusCode = actix_web::http::StatusCode::from_u16(o) // try u16 -> http status code
-        .unwrap_or_else(|_|
-        {
-            log::error!("Assigning a HTTP status code to {o} failed. Falling back to status 500 \"Internval Server Error\".");
-            return actix_web::http::StatusCode::INTERNAL_SERVER_ERROR; // default to 500
-        });
-        return actix_web::HttpResponse::NoContent()
-            .status(status)
-            .content_type(actix_web::http::header::ContentType::html())
-            .body(format!("<center><h1>{status}</h1></center>"));
-    }
-
-    if line_random.starts_with("http://") || line_random.starts_with("https://") // if line is url: redirect
-    {
-        return actix_web::HttpResponse::Found().append_header(("Location", line_random)).finish(); // redirect to url
-    }
-
-    if let Ok(o) = std::fs::read(&line_random) // if line is filepath: assume image, display file
-    {
-        return actix_web::HttpResponse::Ok()
-            .content_type("image/png")
-            .body(o); // return image
-    }
-    log::error!("Loading file from {line_random} failed. Falling back to status 500 \"Internal Server Error\".");
-
-    return actix_web::HttpResponse::NoContent() // if everything failed: default to status code 500
-        .status(actix_web::http::StatusCode::INTERNAL_SERVER_ERROR)
-        .content_type(actix_web::http::header::ContentType::html())
-        .body(format!("<center><h1>{}</h1></center>", actix_web::http::StatusCode::INTERNAL_SERVER_ERROR));
-}
-
-
-/// # Summary
-/// Loads the favicon from assets and returns it for browser tab icon.
-///
-/// # Returns
-/// HTTP response with favicon file
-async fn favicon() -> impl actix_web::Responder
-{
-    const FAVICON_FILEPATH: &str = "./assets/favicon.ico";
-
-
-    return actix_files::NamedFile::open_async(FAVICON_FILEPATH).await;
 }

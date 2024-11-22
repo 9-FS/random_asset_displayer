@@ -1,10 +1,9 @@
-# random_redirector
+# random_asset_displayer
 ## Introduction
 
-This simple webapp picks a random line from the `./config/config.txt` and
-- if it's a number: returns that as status code
-- if it's an URL: redirects to it
-- if it's a filepath: assumes it's an image returns the file
-- if it's none of the above: returns status code 500
+This simple webapp picks a random asset from `./assets/`, loads the filecontent, and displays it. Display mode depends on file type. Currently supported are:
+- raw HTML
+- images: *.gif, *.jpg, *.jpeg, *.png, *.webp
+- videos: *.mp4, *.webm
 
 The list of URL and status codes ist only loaded once during startup and not reloaded during runtime.
