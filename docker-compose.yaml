@@ -1,3 +1,5 @@
+name: "random_asset_displayer"
+
 services:
     random_asset_displayer:
         container_name: "random_asset_displayer"
