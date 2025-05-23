@@ -5,11 +5,11 @@ WORKDIR "/app/"
 COPY "." "."
 RUN cargo build --release
 
-FROM alpine
+FROM gcr.io/distroless/cc
 WORKDIR "/app/"
 COPY --from=builder "/app/target/release/random_asset_displayer" "."
 
-CMD ["./random_asset_displayer"]
+ENTRYPOINT ["./random_asset_displayer"]
 
 
 # MANUAL BUILD:
