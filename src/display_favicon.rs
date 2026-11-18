@@ -12,5 +12,5 @@ pub async fn display_favicon() -> impl actix_web::Responder
     const FAVICON_FILEPATH: &str = "./assets/favicon.ico";
 
 
-    return actix_files::NamedFile::open_async(FAVICON_FILEPATH).await;
+    return actix_files::NamedFile::open(FAVICON_FILEPATH);
 }

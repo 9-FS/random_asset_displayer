@@ -21,7 +21,7 @@ pub async fn display_asset_random(assets_filepath: actix_web::web::Data<Vec<Stri
     asset_random_filepath = assets_filepath
         .to_vec()
         .iter()
-        .choose(&mut rand::thread_rng()) // pick random line from redirect list or if empty default to status code 500
+        .choose(&mut rand::rng()) // pick random line from redirect list or if empty default to status code 500
         .expect("Asset list is empty even though it was checked before to not be empty.")
         .to_owned();
 
